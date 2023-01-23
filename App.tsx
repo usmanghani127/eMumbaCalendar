@@ -6,113 +6,71 @@
  */
 
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import ListView from './src/views/ListView';
+import CalendarView from './src/views/CalendarView';
+import VectorIcon, {ICON_TYPES} from './src/components/VectorIcon';
+import Colors from './src/theme/Colors';
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const Tab = createBottomTabNavigator();
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  enum RouteKeys {
+    ListView = 'List View',
+    CalendarView = 'Calendar View',
+  }
+
+  interface ITabBarIcons {
+    [key: string]: {
+      name: string;
+      type: string;
+    };
+  }
+
+  const tabBarIcons: ITabBarIcons = {
+    [RouteKeys.ListView]: {
+      name: 'th-list',
+      type: ICON_TYPES.FontAwesome,
+    },
+    [RouteKeys.CalendarView]: {
+      name: 'calendar',
+      type: ICON_TYPES.FontAwesome5,
+    },
+  };
+
+  const headerTitles: {[key: string]: string} = {
+    [RouteKeys.ListView]: 'My Events Listing',
+    [RouteKeys.CalendarView]: 'My Events Calendar',
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({route}) => {
+          return {
+            // header1
+            tabBarIcon: ({focused}) => (
+              <VectorIcon
+                iconName={tabBarIcons[route.name]?.name}
+                iconType={tabBarIcons[route.name]?.type}
+                color={focused ? Colors.primary : Colors.grey}
+                size={20}
+              />
+            ),
+            tabBarActiveTintColor: Colors.primary,
+            tabBarInactiveTintColor: Colors.grey,
+            title: headerTitles[route.name],
+            headerTitleAlign: 'center',
+            headerTitleStyle: {color: Colors.white},
+            headerStyle: {backgroundColor: Colors.primary},
+          };
+        }}>
+        <Tab.Screen name="List View" component={ListView} />
+        <Tab.Screen name="Calendar View" component={CalendarView} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
