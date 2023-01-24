@@ -46,20 +46,22 @@ export const eventsSlice = createSlice({
     createEvent: (state: IEventsState, action: PayloadAction<IEvent>) => {
       state.loading = true;
       state.events.push({
-        id: (state.events.length + 1).toString(),
         ...action.payload,
+        id: (state.events.length + 1).toString(),
       });
       state.loading = false;
-      ShowMessage('Event Created Successfully');
+      ShowMessage('Event Created');
     },
     deleteEvent: (state: IEventsState, action: PayloadAction<string>) => {
       state.events = state.events.filter(event => event.id !== action.payload);
+      ShowMessage('Event Deleted');
     },
     updateEvent: (state: IEventsState, action: PayloadAction<IEvent>) => {
       const eventIndex = state.events.findIndex(
         event => event.id === action.payload.id,
       );
       state.events[eventIndex] = action.payload;
+      ShowMessage('Event Updated');
     },
   },
 });

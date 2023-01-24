@@ -1,5 +1,9 @@
-import React, {useState} from 'react';
-import {INPUT_TYPES} from '../../common/Constants';
+import React, {useCallback, useState} from 'react';
+import {
+  INPUT_TYPES,
+  RootNavigatorParamList,
+  RouteKeys,
+} from '../../common/Constants';
 import Input, {IInputField} from '../../components/Input';
 import {SafeAreaView, ScrollView} from 'react-native';
 import Button from '../../components/Button';
@@ -11,21 +15,39 @@ import {
   EventType,
   IEvent,
   IEventsState,
+  updateEvent,
 } from '../../redux/events';
 import ScreenLoading from '../../components/ScreenLoading';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 
-const CreateEvent = () => {
+const CreateEvent = (
+  props: BottomTabScreenProps<RootNavigatorParamList, RouteKeys.CreateEvent>,
+) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const State = useSelector<IEventsState>(
     state => state.events,
   ) as IEventsState;
   const {loading} = State;
+
+  const initialValues: IEvent & {[key: string]: string} = {
+    [EventKeys.TITLE]: '',
+    [EventKeys.DESCRIPTION]: '',
+    [EventKeys.DATE]: '',
+    [EventKeys.START_TIME]: '',
+    [EventKeys.END_TIME]: '',
+    [EventKeys.TYPE]: EventType.Event,
+    [EventKeys.ATTACHMENT]: '',
+  };
+
+  const [editView, setEditView] = useState(false);
   const [data, setData] = useState<IInputField[]>([
     {
       key: EventKeys.TITLE,
       label: 'Title',
       type: INPUT_TYPES.TEXT,
-      value: '',
+      value: initialValues[EventKeys.TITLE],
       error: false,
     },
     {
@@ -33,35 +55,35 @@ const CreateEvent = () => {
       label: 'Description',
       numberOfLines: 5,
       type: INPUT_TYPES.TEXT,
-      value: '',
+      value: initialValues[EventKeys.DESCRIPTION],
       error: false,
     },
     {
       key: EventKeys.TYPE,
       label: 'Event Type',
       type: INPUT_TYPES.DROPDOWN,
-      value: EventType.Event,
+      value: initialValues[EventKeys.TYPE],
       error: false,
     },
     {
       key: EventKeys.DATE,
       label: 'Date',
       type: INPUT_TYPES.DATE,
-      value: '',
+      value: initialValues[EventKeys.DATE],
       error: false,
     },
     {
       key: EventKeys.START_TIME,
       label: 'Start Time',
       type: INPUT_TYPES.TIME,
-      value: '',
+      value: initialValues[EventKeys.START_TIME],
       error: false,
     },
     {
       key: EventKeys.END_TIME,
       label: 'End Time',
       type: INPUT_TYPES.TIME,
-      value: '',
+      value: initialValues[EventKeys.END_TIME],
       error: false,
     },
     {
@@ -69,10 +91,35 @@ const CreateEvent = () => {
       label: 'Attachment',
       optional: true,
       type: INPUT_TYPES.ATTACHMENT,
-      value: '',
+      value: initialValues[EventKeys.ATTACHMENT] as string,
       error: false,
     },
   ]);
+
+  const {route: {params: {event} = {}} = {}} = props;
+
+  const resetData = () => {
+    navigation.reset({
+      ...navigation.getState().routes,
+      index: 1,
+      routes: [{name: RouteKeys.CreateEvent}],
+    });
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (event) {
+        const tempData = [...data];
+        tempData.forEach((field, index) => {
+          tempData[index].value = event[field.key];
+        });
+        setData(tempData);
+        setEditView(true);
+        navigation.setOptions({headerTitle: 'Update Event'});
+      }
+      return () => resetData();
+    }, [event]),
+  );
 
   const onChangeField = (newValue: string, index: number) => {
     const tempData = [...data];
@@ -80,8 +127,9 @@ const CreateEvent = () => {
     setData(tempData);
   };
 
-  const onCreateEvent = () => {
+  const onDonePress = () => {
     const payload: IEvent & {[key: string]: string} = {
+      [EventKeys.ID]: event?.id || '',
       [EventKeys.TITLE]: '',
       [EventKeys.DESCRIPTION]: '',
       [EventKeys.DATE]: '',
@@ -103,7 +151,7 @@ const CreateEvent = () => {
       }
     });
     setData(tempData);
-    valid && dispatch(createEvent(payload));
+    valid && dispatch(editView ? updateEvent(payload) : createEvent(payload));
   };
 
   return (
@@ -128,7 +176,7 @@ const CreateEvent = () => {
         disabled={loading}
         style={styles.done}
         label={'Done'}
-        onPress={onCreateEvent}
+        onPress={onDonePress}
       />
       <ScreenLoading loading={loading} />
     </SafeAreaView>

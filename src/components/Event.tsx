@@ -4,10 +4,13 @@ import Colors from '../theme/Colors';
 import {deleteEvent, IEvent} from '../redux/events';
 import VectorIcon, {ICON_TYPES} from './VectorIcon';
 import {useDispatch} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {RouteKeys} from '../common/Constants';
 
 const Event = (props: IEvent): JSX.Element => {
   const dispatch = useDispatch();
-  const {id, title, description, date, startTime, endTime, attachment} = props;
+  const navigation = useNavigation();
+  const {id, title, description, date, startTime, endTime} = props;
   return (
     <View style={styles.event}>
       <View>
@@ -27,7 +30,9 @@ const Event = (props: IEvent): JSX.Element => {
       <View style={styles.icons}>
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => {}}
+          onPress={() =>
+            navigation.navigate(RouteKeys.CreateEvent, {event: props})
+          }
           style={styles.icon}>
           <VectorIcon
             iconName={'edit'}

@@ -26,6 +26,7 @@ const ListView = () => {
     const RenderFilter = ({item}: {item: string}) => (
       <TouchableOpacity
         onPress={() => setAppliedFilter(item)}
+        activeOpacity={1}
         style={[styles.filter, appliedFilter === item && styles.appliedFilter]}>
         <Text
           style={[

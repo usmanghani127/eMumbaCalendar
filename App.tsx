@@ -13,6 +13,7 @@ import CalendarView from './src/views/CalendarView';
 import VectorIcon, {ICON_TYPES} from './src/components/VectorIcon';
 import Colors from './src/theme/Colors';
 import CreateEvent from './src/views/CreateEvent';
+import {RouteKeys} from './src/common/Constants';
 
 if (__DEV__) {
   import('./src/config/ReactotronConfig').then(() =>
@@ -22,12 +23,6 @@ if (__DEV__) {
 
 function App(): JSX.Element {
   const Tab = createBottomTabNavigator();
-
-  enum RouteKeys {
-    ListView = 'List View',
-    CalendarView = 'Calendar View',
-    CreateEvent = 'Create Event',
-  }
 
   interface ITabBarIcons {
     [key: string]: {
