@@ -1,0 +1,9 @@
+export enum INPUT_TYPES {
+  TEXT,
+  DATE,
+  TIME,
+  DROPDOWN,
+  RADIO,
+  CHECKBOX,
+  ATTACHMENT,
+}

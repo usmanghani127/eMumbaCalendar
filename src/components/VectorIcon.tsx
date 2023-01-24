@@ -19,6 +19,7 @@ interface IVectorIcon {
   iconType: string;
   color: string;
   size: number;
+  [key: string]: any;
 }
 
 export enum ICON_TYPES {
@@ -37,7 +38,7 @@ export enum ICON_TYPES {
   Custom = 'custom',
 }
 
-const VectorIcon = (props: IVectorIcon) => {
+const VectorIcon = (props: IVectorIcon): JSX.Element => {
   const {
     iconName,
     iconType = ICON_TYPES.Custom,
@@ -116,8 +117,8 @@ const VectorIcon = (props: IVectorIcon) => {
       return <FeatherIcon name={iconName} color={color} {...restProps} />;
     case ICON_TYPES.Octicons:
       return <Octicons name={iconName} color={color} {...restProps} />;
-    // default:
-    //   return <CustomIcon name={iconName} color={color} {...restProps} />;
+    default:
+      return <></>;
   }
 };
 

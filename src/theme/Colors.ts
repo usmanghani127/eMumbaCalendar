@@ -4,4 +4,5 @@ export default {
   transparent: 'transparent',
   primary: 'rgb(228, 131, 86)',
   grey: '#979797',
+  red: 'red',
 };
