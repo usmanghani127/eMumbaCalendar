@@ -22,7 +22,8 @@ const Event = (props: IEvent): JSX.Element => {
           {description}
         </Text>
         <Text style={styles.date}>
-          {dayjs(date).format('MMM DD, YYYY')}{' '}
+          {dayjs(date).format('MMM DD, YYYY')}
+          {'  '}
           <Text style={styles.time}>
             {dayjs(startTime).format('hh:mm A')} -{' '}
             {dayjs(endTime).format('hh:mm A')}

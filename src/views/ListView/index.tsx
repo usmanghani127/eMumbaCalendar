@@ -20,7 +20,7 @@ const ListView = () => {
     state => state.events,
   ) as IEventsState;
 
-  const {events, loading} = Store;
+  const {events = [], loading} = Store || {};
 
   const FiltersRow = () => {
     const RenderFilter = ({item}: {item: string}) => (

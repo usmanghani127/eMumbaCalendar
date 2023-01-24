@@ -158,10 +158,10 @@ const CreateEvent = (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.scrollView}>
         {data.map((field: IInputField, index: number) => {
-          const {label, type, value, error, numberOfLines} = field;
+          const {key, label, type, value, error, numberOfLines} = field;
           return (
             <Input
-              key={index.toString()}
+              key={key}
               label={label}
               type={type}
               value={value}

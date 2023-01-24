@@ -7,10 +7,13 @@ import {AppRegistry} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import {Provider} from 'react-redux';
-import store from './src/config/store';
+import {persistor, store} from './src/config/store';
+import {PersistGate} from 'redux-persist/integration/react';
 
 AppRegistry.registerComponent(appName, () => () => (
   <Provider store={store}>
-    <App />
+    <PersistGate loading={null} persistor={persistor}>
+      <App />
+    </PersistGate>
   </Provider>
 ));

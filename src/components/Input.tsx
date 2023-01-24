@@ -18,13 +18,14 @@ export interface IInputField {
 }
 
 const Input = (props: IInputField): JSX.Element => {
-  const {label, type, value, error, numberOfLines = 1, onChange} = props;
+  const {key, label, type, value, error, numberOfLines = 1, onChange} = props;
 
   const InputField = (): JSX.Element => {
     switch (type) {
       case INPUT_TYPES.DROPDOWN:
         return (
           <Picker
+            key={key}
             selectedValue={value}
             onValueChange={onChange}
             itemStyle={styles.pickerItem}
@@ -37,7 +38,7 @@ const Input = (props: IInputField): JSX.Element => {
         );
       case INPUT_TYPES.DATE:
         return (
-          <>
+          <View key={key}>
             <Text style={styles.label}>{label}</Text>
             <DatePicker
               date={new Date(value)}
@@ -49,11 +50,11 @@ const Input = (props: IInputField): JSX.Element => {
               title={label}
               onDateChange={date => onChange && onChange(date.toISOString())}
             />
-          </>
+          </View>
         );
       case INPUT_TYPES.TIME:
         return (
-          <>
+          <View key={key}>
             <Text style={styles.label}>{label}</Text>
             <DatePicker
               date={new Date(value)}
@@ -64,11 +65,12 @@ const Input = (props: IInputField): JSX.Element => {
               mode={'time'}
               onDateChange={date => onChange && onChange(date.toISOString())}
             />
-          </>
+          </View>
         );
       default:
         return (
           <TextInput
+            key={key}
             style={styles.textInput}
             value={value}
             placeholder={label}
