@@ -14,6 +14,7 @@ import VectorIcon, {ICON_TYPES} from './src/components/VectorIcon';
 import Colors from './src/theme/Colors';
 import CreateEvent from './src/views/CreateEvent';
 import {RouteKeys} from './src/common/Constants';
+import {navigationRef} from './src/common/Utilities';
 
 if (__DEV__) {
   import('./src/config/ReactotronConfig').then(() =>
@@ -53,7 +54,7 @@ function App(): JSX.Element {
   };
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Tab.Navigator
         screenOptions={({route}) => {
           return {

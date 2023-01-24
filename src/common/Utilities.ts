@@ -1,4 +1,5 @@
 import {Alert, Platform, ToastAndroid} from 'react-native';
+import {createNavigationContainerRef} from '@react-navigation/native';
 
 export const ShowMessage = (text: string) => {
   if (Platform.OS === 'android') {
@@ -7,3 +8,11 @@ export const ShowMessage = (text: string) => {
     Alert.alert(text);
   }
 };
+
+export const navigationRef = createNavigationContainerRef();
+
+export function navigate(name: string, params = {}) {
+  if (navigationRef.isReady()) {
+    navigationRef.navigate(name, params);
+  }
+}

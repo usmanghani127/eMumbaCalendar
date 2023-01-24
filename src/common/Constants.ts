@@ -4,6 +4,7 @@ export enum INPUT_TYPES {
   TEXT,
   DATE,
   TIME,
+  DATE_TIME,
   DROPDOWN,
   RADIO,
   CHECKBOX,

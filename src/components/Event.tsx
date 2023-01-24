@@ -11,7 +11,16 @@ import dayjs from 'dayjs';
 const Event = (props: IEvent): JSX.Element => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const {id, title, description, date, startTime, endTime} = props;
+  const {id, title, description, startTime, endTime} = props;
+
+  const formattedStartDate = dayjs(startTime).format('MMM DD, YYYY');
+  const formattedStartTime = dayjs(startTime).format('hh:mm A');
+
+  const formattedEndDate = dayjs(endTime).format('MMM DD, YYYY');
+  const formattedEndTime = dayjs(endTime).format('hh:mm A');
+
+  const sameEndDate = formattedStartDate === formattedEndDate;
+
   return (
     <View style={styles.event}>
       <View>
@@ -22,13 +31,21 @@ const Event = (props: IEvent): JSX.Element => {
           {description}
         </Text>
         <Text style={styles.date}>
-          {dayjs(date).format('MMM DD, YYYY')}
+          {formattedStartDate}
           {'  '}
           <Text style={styles.time}>
-            {dayjs(startTime).format('hh:mm A')} -{' '}
-            {dayjs(endTime).format('hh:mm A')}
+            {sameEndDate
+              ? `${formattedStartTime} to ${formattedEndTime}`
+              : formattedStartTime}
           </Text>
         </Text>
+        {!sameEndDate && (
+          <Text style={styles.date}>
+            {`to 
+${formattedEndDate} `}{' '}
+            <Text style={styles.time}>{formattedEndTime}</Text>
+          </Text>
+        )}
       </View>
       <View style={styles.icons}>
         <TouchableOpacity

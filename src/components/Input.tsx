@@ -67,6 +67,22 @@ const Input = (props: IInputField): JSX.Element => {
             />
           </View>
         );
+      case INPUT_TYPES.DATE_TIME:
+        return (
+          <View key={key}>
+            <Text style={styles.label}>{label}</Text>
+            <DatePicker
+              date={new Date(value)}
+              minimumDate={new Date()}
+              textColor={Colors.grey}
+              mode={'datetime'}
+              androidVariant={'nativeAndroid'}
+              style={styles.datePicker}
+              title={label}
+              onDateChange={date => onChange && onChange(date.toISOString())}
+            />
+          </View>
+        );
       default:
         return (
           <TextInput

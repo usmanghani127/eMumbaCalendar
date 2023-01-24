@@ -1,5 +1,8 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {ShowMessage} from '../common/Utilities';
+import {navigate, ShowMessage} from '../common/Utilities';
+import {RouteKeys} from '../common/Constants';
+import dayjs from 'dayjs';
+import notifee, {TimestampTrigger, TriggerType} from '@notifee/react-native';
 
 export enum EventType {
   Event = 'Event',
@@ -13,19 +16,19 @@ export enum EventKeys {
   DESCRIPTION = 'description',
   START_TIME = 'startTime',
   END_TIME = 'endTime',
-  DATE = 'date',
   TYPE = 'type',
   ATTACHMENT = 'attachment',
+  NOTIFICATION_ID = 'notificationId',
 }
 
 export interface IEvent {
   [EventKeys.ID]?: string;
   [EventKeys.TITLE]: string;
   [EventKeys.DESCRIPTION]: string;
-  [EventKeys.DATE]: string;
   [EventKeys.START_TIME]: string;
+  [EventKeys.NOTIFICATION_ID]?: string;
   [EventKeys.END_TIME]: string;
-  [EventKeys.ATTACHMENT]?: unknown;
+  [EventKeys.ATTACHMENT]?: string;
   [EventKeys.TYPE]: EventType;
 }
 
@@ -51,6 +54,47 @@ export const eventsSlice = createSlice({
       });
       state.loading = false;
       ShowMessage('Event Created');
+      navigate(RouteKeys.ListView);
+
+      const {title, startTime} = action.payload;
+
+      const diff = dayjs(startTime).diff(dayjs(), 'minutes');
+      const notificationTime =
+        diff > 10
+          ? dayjs(startTime).subtract(diff, 'minutes').toISOString()
+          : dayjs().add(30, 'seconds').toISOString();
+
+      const trigger: TimestampTrigger = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: new Date(notificationTime).getTime(),
+      };
+
+      notifee
+        .createChannel({
+          id: 'Events',
+          name: 'Events Channel',
+          sound: 'default',
+        })
+        .then(() => {
+          notifee
+            .createTriggerNotification(
+              {
+                title,
+                body: `Today at ${dayjs(startTime).format('hh:mm A')}`,
+                android: {
+                  channelId: 'Events',
+                },
+              },
+              trigger,
+            )
+            .then(id => {
+              const index = state.events.length - 1;
+              state.events[index] = {
+                ...state.events[index],
+                notificationId: id,
+              };
+            });
+        });
     },
     deleteEvent: (state: IEventsState, action: PayloadAction<string>) => {
       state.events = state.events.filter(event => event.id !== action.payload);
@@ -62,6 +106,7 @@ export const eventsSlice = createSlice({
       );
       state.events[eventIndex] = action.payload;
       ShowMessage('Event Updated');
+      navigate(RouteKeys.ListView);
     },
   },
 });
