@@ -2,6 +2,8 @@ import React from 'react';
 import {INPUT_TYPES} from '../common/Constants';
 import {Platform, StyleSheet, TextInput, View} from 'react-native';
 import Colors from '../theme/Colors';
+import {Picker} from '@react-native-picker/picker';
+import {EventType} from '../redux/events';
 
 export interface IInputField {
   key: string;
@@ -19,6 +21,19 @@ const Input = (props: IInputField): JSX.Element => {
 
   const InputField = (): JSX.Element => {
     switch (type) {
+      case INPUT_TYPES.DROPDOWN:
+        return (
+          <Picker
+            selectedValue={value}
+            onValueChange={onChange}
+            itemStyle={styles.pickerItem}
+            style={styles.selected}
+            prompt={'Event Type'}>
+            {Object.values(EventType).map(type => (
+              <Picker.Item label={type} value={type} />
+            ))}
+          </Picker>
+        );
       default:
         return (
           <TextInput
@@ -60,6 +75,14 @@ const styles = StyleSheet.create({
   },
   textInput: {
     color: Colors.grey,
+  },
+  pickerItem: {
+    color: Colors.grey,
+    fontSize: 14,
+  },
+  selected: {
+    color: Colors.grey,
+    fontSize: 14,
   },
 });
 export default Input;

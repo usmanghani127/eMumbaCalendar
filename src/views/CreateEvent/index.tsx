@@ -39,7 +39,7 @@ const CreateEvent = () => {
     {
       key: EventKeys.TYPE,
       label: 'Event Type',
-      type: INPUT_TYPES.TEXT,
+      type: INPUT_TYPES.DROPDOWN,
       value: EventType.Event,
       error: false,
     },

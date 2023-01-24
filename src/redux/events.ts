@@ -45,12 +45,15 @@ export const eventsSlice = createSlice({
   reducers: {
     createEvent: (state: IEventsState, action: PayloadAction<IEvent>) => {
       state.loading = true;
-      state.events.push(action.payload);
+      state.events.push({
+        id: (state.events.length + 1).toString(),
+        ...action.payload,
+      });
       state.loading = false;
       ShowMessage('Event Created Successfully');
     },
     deleteEvent: (state: IEventsState, action: PayloadAction<string>) => {
-      state.events.filter(event => event.id !== action.payload);
+      state.events = state.events.filter(event => event.id !== action.payload);
     },
     updateEvent: (state: IEventsState, action: PayloadAction<IEvent>) => {
       const eventIndex = state.events.findIndex(
