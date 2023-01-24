@@ -1,9 +1,10 @@
 import React from 'react';
 import {INPUT_TYPES} from '../common/Constants';
-import {Platform, StyleSheet, TextInput, View} from 'react-native';
+import {Platform, StyleSheet, TextInput, View, Text} from 'react-native';
 import Colors from '../theme/Colors';
 import {Picker} from '@react-native-picker/picker';
 import {EventType} from '../redux/events';
+import DatePicker from 'react-native-date-picker';
 
 export interface IInputField {
   key: string;
@@ -34,6 +35,37 @@ const Input = (props: IInputField): JSX.Element => {
             ))}
           </Picker>
         );
+      case INPUT_TYPES.DATE:
+        return (
+          <>
+            <Text style={styles.label}>{label}</Text>
+            <DatePicker
+              date={new Date(value)}
+              minimumDate={new Date()}
+              textColor={Colors.grey}
+              mode={'date'}
+              androidVariant={'nativeAndroid'}
+              style={styles.datePicker}
+              title={label}
+              onDateChange={date => onChange && onChange(date.toISOString())}
+            />
+          </>
+        );
+      case INPUT_TYPES.TIME:
+        return (
+          <>
+            <Text style={styles.label}>{label}</Text>
+            <DatePicker
+              date={new Date(value)}
+              title={label}
+              textColor={Colors.grey}
+              androidVariant={'nativeAndroid'}
+              style={styles.datePicker}
+              mode={'time'}
+              onDateChange={date => onChange && onChange(date.toISOString())}
+            />
+          </>
+        );
       default:
         return (
           <TextInput
@@ -42,6 +74,7 @@ const Input = (props: IInputField): JSX.Element => {
             placeholder={label}
             placeholderTextColor={Colors.grey}
             numberOfLines={numberOfLines}
+            multiline={numberOfLines > 1}
             onChangeText={onChange}
           />
         );
@@ -83,6 +116,13 @@ const styles = StyleSheet.create({
   selected: {
     color: Colors.grey,
     fontSize: 14,
+  },
+  datePicker: {
+    alignSelf: 'center',
+  },
+  label: {
+    color: Colors.grey,
+    margin: 10,
   },
 });
 export default Input;

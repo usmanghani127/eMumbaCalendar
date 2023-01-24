@@ -19,7 +19,7 @@ export enum RouteKeys {
 export type RootNavigatorParamList = {
   [RouteKeys.ListView]: undefined;
   [RouteKeys.CreateEvent]: {
-    event: IEvent;
+    event: IEvent & {[key: string]: string};
   };
   [RouteKeys.CalendarView]: undefined;
 };

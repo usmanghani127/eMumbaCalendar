@@ -34,9 +34,9 @@ const CreateEvent = (
   const initialValues: IEvent & {[key: string]: string} = {
     [EventKeys.TITLE]: '',
     [EventKeys.DESCRIPTION]: '',
-    [EventKeys.DATE]: '',
-    [EventKeys.START_TIME]: '',
-    [EventKeys.END_TIME]: '',
+    [EventKeys.DATE]: new Date().toISOString(),
+    [EventKeys.START_TIME]: new Date().toISOString(),
+    [EventKeys.END_TIME]: new Date().toString(),
     [EventKeys.TYPE]: EventType.Event,
     [EventKeys.ATTACHMENT]: '',
   };
@@ -86,14 +86,14 @@ const CreateEvent = (
       value: initialValues[EventKeys.END_TIME],
       error: false,
     },
-    {
-      key: EventKeys.ATTACHMENT,
-      label: 'Attachment',
-      optional: true,
-      type: INPUT_TYPES.ATTACHMENT,
-      value: initialValues[EventKeys.ATTACHMENT] as string,
-      error: false,
-    },
+    // {
+    //   key: EventKeys.ATTACHMENT,
+    //   label: 'Attachment',
+    //   optional: true,
+    //   type: INPUT_TYPES.ATTACHMENT,
+    //   value: initialValues[EventKeys.ATTACHMENT] as string,
+    //   error: false,
+    // },
   ]);
 
   const {route: {params: {event} = {}} = {}} = props;

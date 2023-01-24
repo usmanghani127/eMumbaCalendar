@@ -6,6 +6,7 @@ import VectorIcon, {ICON_TYPES} from './VectorIcon';
 import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {RouteKeys} from '../common/Constants';
+import dayjs from 'dayjs';
 
 const Event = (props: IEvent): JSX.Element => {
   const dispatch = useDispatch();
@@ -21,9 +22,10 @@ const Event = (props: IEvent): JSX.Element => {
           {description}
         </Text>
         <Text style={styles.date}>
-          {date}{' '}
+          {dayjs(date).format('MMM DD, YYYY')}{' '}
           <Text style={styles.time}>
-            {startTime} - {endTime}
+            {dayjs(startTime).format('hh:mm A')} -{' '}
+            {dayjs(endTime).format('hh:mm A')}
           </Text>
         </Text>
       </View>
