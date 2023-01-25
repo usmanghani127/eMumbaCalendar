@@ -24,9 +24,14 @@ const combinedReducers = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, combinedReducers);
 
+const enhancers = [];
+if (__DEV__) {
+  enhancers.push(Reactotron?.createEnhancer);
+}
+
 export const store = configureStore({
   reducer: persistedReducer,
-  enhancers: [Reactotron.createEnhancer()],
+  enhancers: enhancers,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
