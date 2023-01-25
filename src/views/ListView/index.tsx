@@ -59,13 +59,12 @@ const ListView = () => {
         }
         extraData={events}
         renderItem={({item}) => {
-          const {id, title, description, date, startTime, endTime, type} = item;
+          const {id, title, description, startTime, endTime, type} = item;
           return (
             <Event
               id={id}
               title={title}
               description={description}
-              date={date}
               startTime={startTime}
               endTime={endTime}
               type={type}

@@ -5,7 +5,7 @@ import {
   RouteKeys,
 } from '../../common/Constants';
 import Input, {IInputField} from '../../components/Input';
-import {SafeAreaView, ScrollView} from 'react-native';
+import {Alert, SafeAreaView, ScrollView} from 'react-native';
 import Button from '../../components/Button';
 import styles from './styles';
 import {useDispatch, useSelector} from 'react-redux';
@@ -120,6 +120,22 @@ const CreateEvent = (
     setData(tempData);
   };
 
+  const onUpdateEvent = (payload: IEvent & {[key: string]: string}) => {
+    Alert.alert(
+      'Warning',
+      'This action will overwrite event data. Do you want to proceed?',
+      [
+        {
+          text: 'No',
+        },
+        {
+          text: 'Yes',
+          onPress: () => dispatch(updateEvent(payload)),
+        },
+      ],
+    );
+  };
+
   const onDonePress = () => {
     const payload: IEvent & {[key: string]: string} = {
       [EventKeys.ID]: event?.id || '',
@@ -143,7 +159,9 @@ const CreateEvent = (
       }
     });
     setData(tempData);
-    valid && dispatch(editView ? updateEvent(payload) : createEvent(payload));
+    if (valid) {
+      editView ? onUpdateEvent(payload) : dispatch(createEvent(payload));
+    }
   };
 
   return (

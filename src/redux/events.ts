@@ -1,8 +1,10 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {navigate, ShowMessage} from '../common/Utilities';
+import {navigate, ShowMessage, SortEvents} from '../common/Utilities';
 import {RouteKeys} from '../common/Constants';
 import dayjs from 'dayjs';
 import notifee, {TimestampTrigger, TriggerType} from '@notifee/react-native';
+import 'react-native-get-random-values';
+import {v4 as uuidv4} from 'uuid';
 
 export enum EventType {
   Event = 'Event',
@@ -48,10 +50,13 @@ export const eventsSlice = createSlice({
   reducers: {
     createEvent: (state: IEventsState, action: PayloadAction<IEvent>) => {
       state.loading = true;
-      state.events.push({
+      const events = [...state.events];
+      events.push({
         ...action.payload,
-        id: (state.events.length + 1).toString(),
+        id: uuidv4(),
       });
+      events.sort(SortEvents);
+      state.events = events;
       state.loading = false;
       ShowMessage('Event Created');
       navigate(RouteKeys.ListView);
@@ -61,7 +66,7 @@ export const eventsSlice = createSlice({
       const diff = dayjs(startTime).diff(dayjs(), 'minutes');
       const notificationTime =
         diff > 10
-          ? dayjs(startTime).subtract(diff, 'minutes').toISOString()
+          ? dayjs(startTime).subtract(10, 'minutes').toISOString()
           : dayjs().add(30, 'seconds').toISOString();
 
       const trigger: TimestampTrigger = {
@@ -104,9 +109,11 @@ export const eventsSlice = createSlice({
       const eventIndex = state.events.findIndex(
         event => event.id === action.payload.id,
       );
-      state.events[eventIndex] = action.payload;
+      const events = [...state.events];
+      events[eventIndex] = action.payload;
+      events.sort(SortEvents);
+      state.events = events;
       ShowMessage('Event Updated');
-      navigate(RouteKeys.ListView);
     },
   },
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, Text, View, Alert} from 'react-native';
 import Colors from '../theme/Colors';
 import {deleteEvent, IEvent} from '../redux/events';
 import VectorIcon, {ICON_TYPES} from './VectorIcon';
@@ -21,6 +21,17 @@ const Event = (props: IEvent): JSX.Element => {
 
   const sameEndDate = formattedStartDate === formattedEndDate;
 
+  const onPressDelete = () => {
+    Alert.alert('Warning', 'Are you sure you want to delete this event?', [
+      {
+        text: 'No',
+      },
+      {
+        text: 'Yes',
+        onPress: () => dispatch(deleteEvent(id as string)),
+      },
+    ]);
+  };
   return (
     <View style={styles.event}>
       <View>
@@ -63,7 +74,7 @@ ${formattedEndDate} `}{' '}
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => dispatch(deleteEvent(id as string))}
+          onPress={onPressDelete}
           style={styles.icon}>
           <VectorIcon
             iconName={'delete'}
