@@ -5,6 +5,7 @@ import Colors from '../theme/Colors';
 import {Picker} from '@react-native-picker/picker';
 import {EventType} from '../redux/events';
 import DatePicker from 'react-native-date-picker';
+import dayjs from 'dayjs';
 
 export interface IInputField {
   key: string;
@@ -45,6 +46,7 @@ const Input = (props: IInputField): JSX.Element => {
               minimumDate={new Date()}
               textColor={Colors.grey}
               mode={'date'}
+              maximumDate={new Date(dayjs().add(12, 'months').toISOString())}
               androidVariant={'nativeAndroid'}
               style={styles.datePicker}
               title={label}
@@ -74,6 +76,7 @@ const Input = (props: IInputField): JSX.Element => {
             <DatePicker
               date={new Date(value)}
               minimumDate={new Date()}
+              maximumDate={new Date(dayjs().add(12, 'months').toISOString())}
               textColor={Colors.grey}
               mode={'datetime'}
               androidVariant={'nativeAndroid'}
